@@ -1,0 +1,7 @@
+Pillow>=11.3,<13
+pypdf>=6,<7
+pypdfium2>=4.30,<6
+pillow-heif>=1,<2
+openpyxl>=3.1,<4
+PyYAML>=6,<7
+tkinterdnd2>=0.4,<1

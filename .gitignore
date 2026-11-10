@@ -1,0 +1,17 @@
+__pycache__/
+*.py[cod]
+.venv/
+build/
+dist/
+releases/
+*.spec
+tests/samples/
+tests/guiout/
+tests/optout/
+tests/exeopt*/
+tests/packaged-output/
+tests/*.png
+tests/*.log
+tests/*.exe
+ffmpeg.exe
+ffprobe.exe
