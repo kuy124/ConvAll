@@ -13,9 +13,11 @@
   <a href="#build-from-source">Build</a>
 </p>
 
-![Platform](https://img.shields.io/badge/platform-Windows-0078D4)
-![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB)
-![Privacy](https://img.shields.io/badge/conversion-offline-2EA043)
+<p align="center">
+  <img src="https://img.shields.io/badge/platform-Windows-0078D4" alt="Platform: Windows">
+  <img src="https://img.shields.io/badge/Python-3.10%2B-3776AB" alt="Python: 3.10+">
+  <img src="https://img.shields.io/badge/conversion-offline-2EA043" alt="Conversion: offline">
+</p>
 
 ![ConvAll with different output formats assigned to each file](screenshots/main.png)
 
