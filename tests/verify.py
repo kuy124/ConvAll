@@ -7,6 +7,7 @@ HERE = Path(__file__).resolve().parent
 PY = sys.executable
 
 SUITE = [
+    ('ZIP outputs and PDF documents', 'tests/bundles_test.py'),
     ('per-row advanced settings', 'tests/row_options_test.py'),
     ('dialog and menu UX', 'tests/ux_test.py'),
     ('metadata and subprocesses', 'tests/metadata_test.py'),

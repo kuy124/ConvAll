@@ -102,12 +102,18 @@ Switch themes from the header. Your theme is remembered the next time you open t
 | **Audio** | MP3, WAV, FLAC, AAC/M4A, Opus, Ogg, AIFF, WMA, AC3/EAC3, ALAC, CAF, AU, VOC, Wave64, MKA |
 | **Video** | MP4, MKV, WebM, MOV, AVI, MPEG/MPG, M4V, WMV, FLV, TS, OGV, 3GP, NUT; animated GIF/WebP |
 | **PDF** | Render pages to images, extract a text layer, make PDFs from images or documents |
-| **Documents** | TXT, Markdown, HTML, DOCX, ODT; text-to-speech through the Windows voice |
+| **Documents** | TXT, Markdown, HTML, DOCX, ODT, EPUB, FB2; text-to-speech through the Windows voice |
 | **Tables** | CSV, TSV, JSON, JSONL/NDJSON, XML, XLSX, YAML |
 
 **Cross-media examples:** video → PDF contact sheet; video → individual frames;
 audio → waveform image/PDF; image → five-second video; document → speech;
 table → readable document/PDF.
+
+**Multi-file results are bundled automatically:** a multi-page PDF → PNG or
+video → frames conversion produces one compressed ZIP per source. Single-page
+and other single-file conversions keep their normal extension. PDF → DOCX,
+ODT, HTML, EPUB, and FB2 exports the PDF's editable text layer rather than
+reconstructing its visual layout.
 
 The engine can chain up to **three conversion steps** and cleans up intermediate
 files automatically. The format picker offers reachable outputs for your selection.

@@ -124,9 +124,16 @@ with tempfile.TemporaryDirectory() as td:
     # ---- frame spacing
     f1 = eng.convert(mp4, "png-frames", d / "f1", {"frame_every": 1})
     f2 = eng.convert(mp4, "png-frames", d / "f2", {"frame_every": 5})
-    print(f"  frames: every 1s -> {len(f1)}, every 5s -> {len(f2)}")
-    assert len(f2) < len(f1), "frame spacing ignored"
-    checks.append(("frames 1s vs 5s", len(f1), len(f2), True))
+    import zipfile
+    def frame_count(outputs):
+        if outputs[0].suffix == '.zip':
+            with zipfile.ZipFile(outputs[0]) as archive:
+                return len(archive.namelist())
+        return len(outputs)
+    n1, n2 = frame_count(f1), frame_count(f2)
+    print(f"  frames: every 1s -> {n1}, every 5s -> {n2}")
+    assert n2 < n1, "frame spacing ignored"
+    checks.append(("frames 1s vs 5s", n1, n2, True))
 
     # ---- text -> pdf page size
     md = S / "notes.md"

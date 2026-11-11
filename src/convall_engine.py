@@ -65,7 +65,7 @@ AUDIO_EXT = {"mp3", "wav", "flac", "ogg", "oga", "m4a", "opus", "aac", "wma",
 VIDEO_EXT = {"mp4", "m4v", "mkv", "webm", "avi", "mov", "wmv", "flv", "mpg",
              "mpeg", "ts", "m2ts", "3gp", "ogv", "vob", "mts"}
 TABLE_EXT = {"csv", "tsv", "json", "xlsx", "xlsm", "yaml", "yml", "jsonl", "ndjson", "xml"}
-TEXT_EXT = {"txt", "md", "markdown", "log", "rst", "html", "htm", "docx", "odt"}
+TEXT_EXT = {"txt", "md", "markdown", "log", "rst", "html", "htm", "docx", "odt", "epub", "fb2"}
 
 # Pseudo-targets: things that aren't one-file-one-extension.
 FRAME_TARGETS = {"png-frames", "jpg-frames"}
@@ -525,7 +525,7 @@ def direct_targets(p) -> list[str]:
     if k == "image":
         return [t for t in image_targets() if t != ext_of(p)] + ['mp4', 'webm', 'mkv']
     if k == "pdf":
-        return ["png", "jpg", "webp", "txt"]
+        return ["png", "jpg", "webp", *DOCUMENT_FORMATS]
     if k == "audio":
         return ([t for t in AUDIO_TARGETS if t != ext_of(p)] +
                 [t for t in ("mp4", "mkv", "webm", "ogv") if t != ext_of(p)] +
@@ -1169,6 +1169,11 @@ def convert_direct(src, target: str, outdir=None, opts: dict | None = None) -> l
     if k == "pdf":
         if target in ("png", "jpg", "webp", "txt"):
             return convert_pdf(src, target, outdir, opts)
+        if target in DOCUMENT_FORMATS:
+            import tempfile
+            with tempfile.TemporaryDirectory(prefix='convall-text-') as temp:
+                text = convert_pdf(src, 'txt', Path(temp), opts)[0]
+                return write_text(read_text(text), unique_path(outdir / f'{src.stem}.{target}'))
         raise ConvertError(f"can't make {label_of(target)} from a pdf")
     if k in ("audio", "video"):
         return convert_media(src, target, outdir, opts)
@@ -1191,7 +1196,7 @@ def convert_direct(src, target: str, outdir=None, opts: dict | None = None) -> l
     raise ConvertError(f"don't know what .{ext_of(src)} is")
 
 
-def convert(src, target, outdir=None, opts=None):
+def _convert_outputs(src, target, outdir=None, opts=None):
     """Execute a planned route; discard intermediates, never overwrite originals."""
     import tempfile
     src = Path(src)
@@ -1241,6 +1246,34 @@ def convert(src, target, outdir=None, opts=None):
                 renamed.append(dest)
             current = renamed
         return current
+
+
+def convert(src, target, outdir=None, opts=None):
+    """Publish one result per source; bundle multi-file conversions as ZIP."""
+    import tempfile
+    import zipfile
+
+    source = Path(src)
+    destination = Path(outdir) if outdir else source.parent
+    destination.mkdir(parents=True, exist_ok=True)
+    # Stage beside the destination: publish atomically on the same filesystem.
+    with tempfile.TemporaryDirectory(prefix='.convall-', dir=destination) as temp:
+        staged = Path(temp)
+        outputs = _convert_outputs(source, target, staged, opts)
+        if len(outputs) == 1:
+            final = unique_path(destination / outputs[0].name)
+            outputs[0].replace(final)
+            return [final]
+        if not outputs:
+            raise ConvertError('Conversion produced no files')
+        name = str((opts or {}).get('output_name', '')).strip() or source.stem
+        final = unique_path(destination / f'{name}_{target.lower().lstrip(".")}.zip')
+        archive = staged / 'result.zip'
+        with zipfile.ZipFile(archive, 'w', zipfile.ZIP_DEFLATED) as bundle:
+            for output in outputs:
+                bundle.write(output, arcname=output.name)
+        archive.replace(final)
+        return [final]
 
 
 # ---------------------------------------------------------------- selftest ----

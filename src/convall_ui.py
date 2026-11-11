@@ -1023,8 +1023,6 @@ class App:
                                  bg=BG, fill=PANEL, fg=TEXT, hover=PANEL_HI,
                                  command=self.toggle_theme_menu)
         self.theme_button.pack(side='right', padx=P(18))
-        tk.Label(bar, text="●  OFFLINE & PRIVATE", bg=BG, fg=OK,
-                 font=self.f_label).pack(side="right", padx=P(22))
         return bar
 
     def close_theme_menu(self):

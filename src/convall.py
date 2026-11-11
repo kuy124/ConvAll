@@ -22,7 +22,7 @@ from __future__ import annotations
 import ctypes
 import sys
 
-VERSION = "2.0"
+VERSION = "0.1.1"
 
 
 def cli(argv: list[str]) -> int:
